@@ -4,29 +4,19 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Category from "@/components/category/category";
-import CategoryModal from "@/components/common/Modal";
 import Reports from "@/components/reports/Reports";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Button,
-  Spacer,
-  useDisclosure,
-} from "@heroui/react";
+import { Card, CardHeader, CardBody, Spacer } from "@heroui/react";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // 🔒 اگر لاگین نیست، بفرستش به login
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
 
-  // ⏳ حالت در حال بارگذاری
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center h-screen text-gray-600">
@@ -35,14 +25,12 @@ export default function Home() {
     );
   }
 
-  // 🚫 اگه هنوز لاگین نکرده، هیچ چیزی نشون نده تا ریدایرکت بشه
   if (status === "unauthenticated") return null;
 
-  // ✅ کاربر لاگین‌شده
   return (
     <div className="p-8 bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
       <h2 className="text-4xl font-bold text-gray-800 mb-8">
-        Welcome back 👋 {session?.user?.name || ""}
+        Welcome back  {session?.user?.name || ""}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
