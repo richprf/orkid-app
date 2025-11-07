@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+// prisma/schema.prisma
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String?   
+  image     String?
+  category  Category[]
+  habits    Habit[]
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  color     String?
+  icon      String?
+  userId    String?  
+  user      User?    @relation(fields: [userId], references: [id])
+  habits    Habit[]
+  createdAt DateTime @default(now())
+}
+
+
+
+model Habit {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  frequency   String      
+  categoryId  String
+  userId      String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  user        User       @relation(fields: [userId], references: [id])
+  logs        HabitLog[]
+  createdAt   DateTime   @default(now())
+}
+
+model HabitLog {
+  id         String   @id @default(uuid())
+  habitId    String
+  date       DateTime @default(now())
+  completed  Boolean  @default(false)
+  habit      Habit    @relation(fields: [habitId], references: [id])
+}
